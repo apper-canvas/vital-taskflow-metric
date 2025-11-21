@@ -3,9 +3,10 @@ import { lazy, Suspense } from 'react';
 
 // Lazy load components
 const Layout = lazy(() => import('@/components/organisms/Layout'));
+const Dashboard = lazy(() => import('@/components/pages/Dashboard'));
 const TaskManager = lazy(() => import('@/components/pages/TaskManager'));
+const Analytics = lazy(() => import('@/components/pages/Analytics'));
 const NotFound = lazy(() => import('@/components/pages/NotFound'));
-
 // Loading fallback component
 const LoadingFallback = () => (
   <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100">
@@ -23,7 +24,15 @@ const mainRoutes = [
   {
     path: "",
     index: true,
+    element: <Suspense fallback={<LoadingFallback />}><Dashboard /></Suspense>
+  },
+  {
+    path: "tasks",
     element: <Suspense fallback={<LoadingFallback />}><TaskManager /></Suspense>
+  },
+  {
+    path: "analytics",
+    element: <Suspense fallback={<LoadingFallback />}><Analytics /></Suspense>
   },
   {
     path: "*",

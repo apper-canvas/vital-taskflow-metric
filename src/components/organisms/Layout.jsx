@@ -97,10 +97,10 @@ const Layout = () => {
     formRef
   };
 
-  const navigation = [
+const navigation = [
     { name: 'Dashboard', href: '/', icon: 'LayoutDashboard' },
-    { name: 'Tasks', href: '/', icon: 'CheckSquare' },
-    { name: 'Analytics', href: '#', icon: 'BarChart3' }
+    { name: 'Tasks', href: '/tasks', icon: 'CheckSquare' },
+    { name: 'Analytics', href: '/analytics', icon: 'BarChart3' }
   ];
 
   const toggleSidebar = () => setSidebarOpen(!sidebarOpen);
@@ -130,7 +130,7 @@ const Layout = () => {
 
         <nav className="mt-5 px-2 space-y-1">
           {navigation.map((item) => {
-            const isActive = item.href === '/' ? location.pathname === '/' : location.pathname.startsWith(item.href);
+const isActive = item.href === '/' ? location.pathname === '/' : location.pathname === item.href || location.pathname.startsWith(item.href + '/');
             return (
               <Link
                 key={item.name}
@@ -169,8 +169,10 @@ const Layout = () => {
                 <ApperIcon name="Menu" className="h-6 w-6" />
               </button>
               <div className="hidden lg:block">
-                <h2 className="text-lg font-semibold text-slate-900">
-                  {navigation.find(nav => nav.href === '/' && location.pathname === '/')?.name || 'Dashboard'}
+<h2 className="text-lg font-semibold text-slate-900">
+                  {navigation.find(nav => 
+                    nav.href === '/' ? location.pathname === '/' : location.pathname === nav.href || location.pathname.startsWith(nav.href + '/')
+                  )?.name || 'Dashboard'}
                 </h2>
               </div>
             </div>
