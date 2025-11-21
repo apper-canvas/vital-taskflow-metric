@@ -1,67 +1,35 @@
-import React, { useState } from "react";
+import React from "react";
 import { motion } from "framer-motion";
-import { useTasks } from "@/hooks/useTasks";
-import { filterTasks } from "@/utils/taskUtils";
+import { useOutletContext } from "react-router-dom";
+import ApperIcon from "@/components/ApperIcon";
+import TaskList from "@/components/organisms/TaskList";
 import Header from "@/components/organisms/Header";
 import TaskForm from "@/components/molecules/TaskForm";
 import FilterBar from "@/components/molecules/FilterBar";
-import TaskList from "@/components/organisms/TaskList";
-import ApperIcon from "@/components/ApperIcon";
+import { filterTasks } from "@/utils/taskUtils";
 
 const TaskManager = () => {
-  const { tasks, addTask, updateTask, completeTask, uncompleteTask, deleteTask } = useTasks();
-  const [statusFilter, setStatusFilter] = useState("all");
-  const [priorityFilter, setPriorityFilter] = useState("all");
-  const [editingTask, setEditingTask] = useState(null);
-  const [showForm, setShowForm] = useState(false);
-
-  // Calculate task counts
-  const taskCounts = {
-    total: tasks.length,
-    active: tasks.filter(task => !task.completed).length,
-    completed: tasks.filter(task => task.completed).length,
-    all: tasks.length
-  };
-
-  const filteredTaskCounts = {
-    all: tasks.length,
-    active: tasks.filter(task => !task.completed).length,
-    completed: tasks.filter(task => task.completed).length
-  };
-
-  const handleCreateTask = (taskData) => {
-    addTask(taskData);
-    setShowForm(false);
-  };
-
-  const handleEditTask = (task) => {
-    setEditingTask(task);
-    setShowForm(true);
-  };
-
-  const handleUpdateTask = (taskData) => {
-    if (editingTask) {
-      updateTask(editingTask.id, taskData);
-      setEditingTask(null);
-      setShowForm(false);
-    }
-  };
-
-  const handleCancelEdit = () => {
-    setEditingTask(null);
-    setShowForm(false);
-  };
-
-  const scrollToForm = () => {
-    setShowForm(true);
-    setTimeout(() => {
-      document.getElementById("task-form")?.scrollIntoView({ 
-        behavior: "smooth", 
-        block: "start" 
-      });
-    }, 100);
-  };
-
+  // Get all state and handlers from outlet context
+  const {
+    tasks,
+    statusFilter,
+    setStatusFilter,
+    priorityFilter,
+    setPriorityFilter,
+    editingTask,
+    showForm,
+    setShowForm,
+    taskCounts,
+    filteredTaskCounts,
+    handleCreateTask,
+    handleEditTask,
+    handleUpdateTask,
+    handleCancelEdit,
+    scrollToForm,
+    completeTask,
+    uncompleteTask,
+    deleteTask
+  } = useOutletContext();
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/40">
       {/* Header */}

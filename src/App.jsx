@@ -1,26 +1,9 @@
 import React from "react";
-import { ToastContainer } from "react-toastify";
-import TaskManager from "@/components/pages/TaskManager";
+import { RouterProvider } from "react-router-dom";
+import { router } from "@/router/index";
 
 function App() {
-  return (
-    <>
-      <TaskManager />
-      <ToastContainer
-        position="top-right"
-        autoClose={3000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="light"
-        style={{ zIndex: 9999 }}
-      />
-    </>
-  );
+  return <RouterProvider router={router} />;
 }
 
 export default App;
