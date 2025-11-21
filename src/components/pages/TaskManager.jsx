@@ -11,11 +11,13 @@ import { filterTasks } from "@/utils/taskUtils";
 const TaskManager = () => {
   // Get all state and handlers from outlet context
   const {
-    tasks,
+tasks,
     statusFilter,
     setStatusFilter,
     priorityFilter,
     setPriorityFilter,
+    searchText,
+    setSearchText,
     editingTask,
     showForm,
     setShowForm,
@@ -89,11 +91,13 @@ const TaskManager = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.3 }}
           >
-            <FilterBar
+<FilterBar
               statusFilter={statusFilter}
               priorityFilter={priorityFilter}
+              searchText={searchText}
               onStatusFilterChange={setStatusFilter}
               onPriorityFilterChange={setPriorityFilter}
+              onSearchTextChange={setSearchText}
               taskCounts={filteredTaskCounts}
             />
           </motion.section>
@@ -104,10 +108,11 @@ const TaskManager = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.4 }}
           >
-            <TaskList
+<TaskList
               tasks={tasks}
               statusFilter={statusFilter}
               priorityFilter={priorityFilter}
+              searchText={searchText}
               onComplete={completeTask}
               onUncomplete={uncompleteTask}
               onEdit={handleEditTask}

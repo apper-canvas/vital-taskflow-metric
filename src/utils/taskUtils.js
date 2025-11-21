@@ -2,7 +2,7 @@ export const generateTaskId = () => {
   return Date.now().toString() + Math.random().toString(36).substr(2, 9);
 };
 
-export const filterTasks = (tasks, statusFilter, priorityFilter) => {
+export const filterTasks = (tasks, statusFilter, priorityFilter, searchText = "") => {
   return tasks.filter(task => {
     const statusMatch = statusFilter === "all" || 
                        (statusFilter === "active" && !task.completed) ||
@@ -10,7 +10,11 @@ export const filterTasks = (tasks, statusFilter, priorityFilter) => {
     
     const priorityMatch = priorityFilter === "all" || task.priority === priorityFilter;
     
-    return statusMatch && priorityMatch;
+    const searchMatch = !searchText || 
+                       task.title?.toLowerCase().includes(searchText.toLowerCase()) ||
+                       task.description?.toLowerCase().includes(searchText.toLowerCase());
+    
+    return statusMatch && priorityMatch && searchMatch;
   });
 };
 

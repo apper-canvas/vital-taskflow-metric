@@ -1,13 +1,16 @@
 import React from "react";
 import { cn } from "@/utils/cn";
 import Button from "@/components/atoms/Button";
+import Input from "@/components/atoms/Input";
 import ApperIcon from "@/components/ApperIcon";
 
 const FilterBar = ({ 
   statusFilter, 
   priorityFilter, 
+  searchText = "",
   onStatusFilterChange, 
   onPriorityFilterChange,
+  onSearchTextChange,
   taskCounts = { all: 0, active: 0, completed: 0 }
 }) => {
   const statusFilters = [
@@ -23,8 +26,32 @@ const FilterBar = ({
     { key: "low", label: "Low", icon: "Info" }
   ];
 
-  return (
+return (
     <div className="bg-white rounded-xl shadow-card border border-slate-200 p-4 space-y-4">
+      {/* Search Bar */}
+      <div className="space-y-2">
+        <h3 className="text-sm font-medium text-slate-700">Search Tasks</h3>
+        <div className="relative">
+          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+            <ApperIcon name="Search" className="w-4 h-4 text-slate-400" />
+          </div>
+          <Input
+            type="text"
+            placeholder="Search tasks by title or description..."
+            value={searchText}
+            onChange={(e) => onSearchTextChange(e.target.value)}
+            className="pl-10 pr-10"
+          />
+          {searchText && (
+            <button
+              onClick={() => onSearchTextChange("")}
+              className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600 transition-colors"
+            >
+              <ApperIcon name="X" className="w-4 h-4" />
+            </button>
+          )}
+        </div>
+      </div>
       {/* Status Filters */}
       <div className="space-y-2">
         <h3 className="text-sm font-medium text-slate-700">Filter by Status</h3>

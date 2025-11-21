@@ -8,13 +8,14 @@ const TaskList = ({
   tasks, 
   statusFilter, 
   priorityFilter, 
+  searchText,
   onComplete, 
   onUncomplete, 
   onEdit, 
   onDelete,
   onCreateTask
 }) => {
-  const filteredTasks = filterTasks(tasks, statusFilter, priorityFilter);
+const filteredTasks = filterTasks(tasks, statusFilter, priorityFilter, searchText);
   const activeTasks = filteredTasks.filter(task => !task.completed);
   const completedTasks = filteredTasks.filter(task => task.completed);
 
