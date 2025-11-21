@@ -1,14 +1,104 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { Link, Outlet, useLocation } from "react-router-dom";
 import ApperIcon from "@/components/ApperIcon";
 import { useTasks } from "@/hooks/useTasks";
+import { filterTasks } from "@/utils/taskUtils";
 
 const Layout = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const location = useLocation();
+  const formRef = useRef(null);
+
+  // Task management state and handlers from useTasks hook
+  const taskManagement = useTasks();
+  
+  // Additional UI state for TaskManager
+  const [statusFilter, setStatusFilter] = useState('all');
+  const [priorityFilter, setPriorityFilter] = useState('all');
+  const [searchText, setSearchText] = useState('');
+  const [editingTask, setEditingTask] = useState(null);
+  const [showForm, setShowForm] = useState(false);
+
+  // Filter tasks based on current filters
+  const filteredTasks = filterTasks(taskManagement.tasks, {
+    status: statusFilter,
+    priority: priorityFilter,
+    search: searchText
+  });
+
+  // Calculate task counts
+  const taskCounts = {
+    all: taskManagement.tasks.length,
+    pending: taskManagement.tasks.filter(t => !t.completed).length,
+    completed: taskManagement.tasks.filter(t => t.completed).length,
+    overdue: taskManagement.tasks.filter(t => !t.completed && new Date(t.dueDate) < new Date()).length
+  };
+
+  const filteredTaskCounts = {
+    all: filteredTasks.length,
+    pending: filteredTasks.filter(t => !t.completed).length,
+    completed: filteredTasks.filter(t => t.completed).length,
+    overdue: filteredTasks.filter(t => !t.completed && new Date(t.dueDate) < new Date()).length
+  };
+
+  // Task handlers
+  const handleCreateTask = (taskData) => {
+    taskManagement.addTask(taskData);
+    setShowForm(false);
+  };
+
+  const handleEditTask = (task) => {
+    setEditingTask(task);
+    setShowForm(true);
+    scrollToForm();
+  };
+
+  const handleUpdateTask = (taskData) => {
+    if (editingTask) {
+      taskManagement.updateTask(editingTask.id, taskData);
+      setEditingTask(null);
+      setShowForm(false);
+    }
+  };
+
+  const handleCancelEdit = () => {
+    setEditingTask(null);
+    setShowForm(false);
+  };
+
+  const scrollToForm = () => {
+    setTimeout(() => {
+      formRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }, 100);
+  };
+
+  // Prepare context for TaskManager
+  const outletContext = {
+    tasks: taskManagement.tasks,
+    statusFilter,
+    setStatusFilter,
+    priorityFilter,
+    setPriorityFilter,
+    searchText,
+    setSearchText,
+    editingTask,
+    showForm,
+    setShowForm,
+    taskCounts,
+    filteredTaskCounts,
+    handleCreateTask,
+    handleEditTask,
+    handleUpdateTask,
+    handleCancelEdit,
+    scrollToForm,
+    completeTask: taskManagement.completeTask,
+    uncompleteTask: taskManagement.uncompleteTask,
+    deleteTask: taskManagement.deleteTask,
+    formRef
+  };
 
   const navigation = [
-{ name: 'Dashboard', href: '/', icon: 'LayoutDashboard' },
+    { name: 'Dashboard', href: '/', icon: 'LayoutDashboard' },
     { name: 'Tasks', href: '/', icon: 'CheckSquare' },
     { name: 'Analytics', href: '#', icon: 'BarChart3' }
   ];
@@ -98,7 +188,7 @@ const Layout = () => {
 
         {/* Page content */}
         <main className="flex-1 overflow-y-auto bg-slate-50">
-          <Outlet />
+          <Outlet context={outletContext} />
         </main>
       </div>
     </div>
